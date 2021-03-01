@@ -548,6 +548,22 @@ namespace C4PhasMod
                             lightSwitchToggle = !lightSwitchToggle;
                             Debug.Msg("Blinking Lights", 1);
                         }
+                        if (GUI.Button(new Rect(950f, 82f, 150f, 20f), "Spawn Dirty Water") && levelController != null)
+                        {
+                            foreach (Sink sink in Main.sinks)
+                            {
+                                float distFrmSink = Vector3.Distance(myPlayer.transform.position, sink.transform.position);
+                                if (distFrmSink < 5)
+                                {
+                                    sink.Use();
+                                    sink.NetworkedUse();
+                                    sink.SpawnDirtyWater();
+                                    sink.SpawnDirtyWaterSync();
+                                    sink.Update();
+                                    sink.NetworkedUse();
+                                }
+                            }
+                        }
                     }
                 }
                 else
@@ -782,7 +798,11 @@ namespace C4PhasMod
 
             windows = Object.FindObjectsOfType<Window>().ToList<Window>() ?? null;
             yield return new WaitForSeconds(0.15f);
-            Debug.Msg("ouijaBoards", 3);
+            Debug.Msg("windows", 3);
+            
+            sinks = Object.FindObjectsOfType<Sink>().ToList<Sink>();
+            yield return new WaitForSeconds(0.15f);
+            Debug.Msg("sinks", 3);
 
             if (Object.FindObjectOfType<Player>() != null)
             {
@@ -835,6 +855,7 @@ namespace C4PhasMod
         public static Camera cameraMain;
         public static List<DNAEvidence> dnaEvidences;
         public static List<Door> doors;
+        public static List<Sink> sinks;
         public static GameController gameController;
         public static GhostAI ghostAI;
         public static List<GhostAI> ghostAIs;
